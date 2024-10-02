@@ -1,0 +1,23 @@
+version: '3'
+
+tasks:
+  rector:
+    cmds:
+      - vendor/bin/rector --dry-run
+
+  test:
+    cmds:
+      - php artisan test {{.CLI_ARGS}}
+
+  ci:
+    cmds:
+      - task: rector
+      - task: test
+
+  fix:rector:
+    cmds:
+      - vendor/bin/rector
+
+  fix:
+    cmds:
+      - task: fix:rector
