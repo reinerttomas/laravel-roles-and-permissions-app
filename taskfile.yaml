@@ -5,6 +5,10 @@ tasks:
     cmds:
       - vendor/bin/rector --dry-run
 
+  ccs:
+    cmds:
+      - vendor/bin/pint --config pint.json -v --test
+
   test:
     cmds:
       - php artisan test {{.CLI_ARGS}}
@@ -12,12 +16,18 @@ tasks:
   ci:
     cmds:
       - task: rector
+      - task: ccs
       - task: test
 
   fix:rector:
     cmds:
       - vendor/bin/rector
 
+  fix:ccs:
+    cmds:
+      - vendor/bin/pint --config pint.json
+
   fix:
     cmds:
       - task: fix:rector
+      - task: fix:ccs
