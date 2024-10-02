@@ -5,9 +5,25 @@ tasks:
     cmds:
       - vendor/bin/rector --dry-run
 
+  rector:fix:
+    cmds:
+      - vendor/bin/rector
+
   ccs:
     cmds:
       - vendor/bin/pint --config pint.json -v --test
+
+  ccs:fix:
+    cmds:
+      - vendor/bin/pint --config pint.json
+
+  prettier:
+    cmds:
+      - npm run format
+
+  prettier:fix:
+    cmds:
+      - npm run format:fix
 
   test:
     cmds:
@@ -17,17 +33,11 @@ tasks:
     cmds:
       - task: rector
       - task: ccs
+      - task: prettier
       - task: test
-
-  fix:rector:
-    cmds:
-      - vendor/bin/rector
-
-  fix:ccs:
-    cmds:
-      - vendor/bin/pint --config pint.json
 
   fix:
     cmds:
-      - task: fix:rector
-      - task: fix:ccs
+      - task: rector:fix
+      - task: ccs:fix
+      - task: prettier:fix
