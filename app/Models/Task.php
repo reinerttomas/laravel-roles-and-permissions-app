@@ -14,6 +14,11 @@ final class Task extends Model
     /** @use HasFactory<TaskFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'due_date',
+    ];
+
     /**
      * @return BelongsTo<User, Task>
      */
