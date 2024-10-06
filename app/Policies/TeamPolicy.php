@@ -21,4 +21,9 @@ final class TeamPolicy
     {
         return $user->hasPermissionTo(PermissionEnum::CreateTeam);
     }
+
+    public function changeTeam(User $user): bool
+    {
+        return $user->hasPermissionTo(PermissionEnum::SwitchTeam);
+    }
 }
