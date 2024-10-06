@@ -15,6 +15,12 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @can(\App\Enums\PermissionEnum::ListTeam)
+                        <x-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.*')">
+                            {{ __('Clinics') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 

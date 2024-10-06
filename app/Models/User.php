@@ -9,8 +9,11 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Traits\HasRoles;
 
 final class User extends Authenticatable
@@ -79,5 +82,19 @@ final class User extends Authenticatable
     public function belongsToTeam(Team $team): bool
     {
         return $this->teams->contains(fn (Team $other): bool => $other->id === $team->id);
+    }
+
+    /**
+     * @return MorphToMany<Role, $this>
+     */
+    public function rolesWithoutTeam(): MorphToMany
+    {
+        return $this->morphToMany(
+            config('permission.models.role'),
+            'model',
+            config('permission.table_names.model_has_roles'),
+            config('permission.column_names.model_morph_key'),
+            app(PermissionRegistrar::class)->pivotRole
+        );
     }
 }
