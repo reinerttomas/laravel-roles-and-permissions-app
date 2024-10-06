@@ -21,6 +21,12 @@
                             {{ __('Clinics') }}
                         </x-nav-link>
                     @endcan
+
+                    @can(\App\Enums\PermissionEnum::ListUser)
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
