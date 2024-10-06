@@ -7,14 +7,16 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 final class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +27,7 @@ final class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin',
+        'current_team_id',
     ];
 
     /**
@@ -52,10 +54,30 @@ final class User extends Authenticatable
     }
 
     /**
-     * @return HasMany<Task, User>
+     * @return BelongsToMany<Team, $this>
      */
-    public function tasks(): HasMany
+    public function teams(): BelongsToMany
     {
-        return $this->hasMany(Task::class);
+        return $this->belongsToMany(
+            related: Team::class,
+            table: config('permission.table_names.model_has_roles'),
+            foreignPivotKey: 'model_id',
+        );
+    }
+
+    /**
+     * @return BelongsTo<Team, $this>
+     */
+    public function currentTeam(): BelongsTo
+    {
+        return $this->belongsTo(
+            related: Team::class,
+            foreignKey: 'current_team_id',
+        );
+    }
+
+    public function belongsToTeam(Team $team): bool
+    {
+        return $this->teams->contains(fn (Team $other): bool => $other->id === $team->id);
     }
 }
