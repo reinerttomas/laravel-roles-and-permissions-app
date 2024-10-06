@@ -33,6 +33,22 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- Team/Clinic -->
+        <div class="mt-4">
+            <x-input-label for="team_id" :value="__('Team')" />
+            <select
+                name="team_id"
+                id="team_id"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            >
+                <option>-- SELECT TEAM --</option>
+                @foreach ($teams as $id => $name)
+                    <option value="{{ $id }}">{{ $name }}</option>
+                @endforeach
+            </select>
+            <x-input-error :messages="$errors->get('team_id')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />

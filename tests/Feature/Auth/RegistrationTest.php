@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Models\Team;
+
 test('registration screen can be rendered', function (): void {
     $response = $this->get('/register');
 
@@ -9,11 +11,14 @@ test('registration screen can be rendered', function (): void {
 });
 
 test('new users can register', function (): void {
+    $team = Team::factory()->create();
+
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
+        'team_id' => $team->id,
     ]);
 
     $this->assertAuthenticated();

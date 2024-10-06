@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +23,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $teams = Team::whereNot('name', 'Master Admin Team')->pluck('name', 'id');
+
+        return view('auth.register', [
+            'teams' => $teams,
+        ]);
     }
 
     /**
@@ -35,17 +41,23 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'team_id' => ['required', 'exists:teams,id'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'current_team_id' => $request->team_id,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
+
+        setPermissionsTeamId($request->team_id);
+
+        $user->assignRole(RoleEnum::Patient);
 
         return redirect(route('dashboard', absolute: false));
     }
