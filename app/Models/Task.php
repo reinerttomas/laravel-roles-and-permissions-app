@@ -33,13 +33,13 @@ final class Task extends Model
 
     protected static function booted(): void
     {
-        self::creating(function (Task $task) {
+        self::creating(function (Task $task): void {
             if (auth()->check()) {
                 $task->team_id = auth()->user()->current_team_id;
             }
         });
 
-        self::addGlobalScope('team-tasks', function (Builder $query) {
+        self::addGlobalScope('team-tasks', function (Builder $query): void {
             if (auth()->check()) {
                 $query->where('team_id', auth()->user()->current_team_id);
 

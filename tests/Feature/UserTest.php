@@ -5,11 +5,11 @@ declare(strict_types=1);
 use App\Enums\RoleEnum;
 use App\Models\User;
 use Illuminate\Support\Collection;
-
 use Spatie\Permission\Models\Role;
+
 use function Pest\Laravel\actingAs;
 
-it('allows clinic owner and admin to view users list', function () {
+it('allows clinic owner and admin to view users list', function (): void {
     $clinicOwner = User::factory()->clinicOwner()->create();
     $clinicAdmin = User::factory()->clinicAdmin()->create();
 
@@ -21,25 +21,21 @@ it('allows clinic owner and admin to view users list', function () {
     actingAs($clinicOwner)
         ->get(route('users.index'))
         ->assertOk()
-        ->assertViewHas('users', function (Collection $users) use ($clinicAdmin, $doctor, $staff, $patient): bool {
-            return $users->contains(fn (User $user) => $user->name === $clinicAdmin->name
-                    || $user->name === $doctor->name
-                    || $user->name === $staff->name
-            ) && $users->doesntContain(fn (User $user) => $user->name === $patient->name);
-        });
+        ->assertViewHas('users', fn (Collection $users): bool => $users->contains(fn (User $user): bool => $user->name === $clinicAdmin->name
+                || $user->name === $doctor->name
+                || $user->name === $staff->name
+        ) && $users->doesntContain(fn (User $user): bool => $user->name === $patient->name));
 
     actingAs($clinicAdmin)
         ->get(route('users.index'))
         ->assertOk()
-        ->assertViewHas('users', function (Collection $users) use ($clinicAdmin, $doctor, $staff, $patient): bool {
-            return $users->contains(fn (User $user) => $user->name === $clinicAdmin->name
-                    || $user->name === $doctor->name
-                    || $user->name === $staff->name
-            ) && $users->doesntContain(fn (User $user) => $user->name === $patient->name);
-        });
+        ->assertViewHas('users', fn (Collection $users): bool => $users->contains(fn (User $user): bool => $user->name === $clinicAdmin->name
+                || $user->name === $doctor->name
+                || $user->name === $staff->name
+        ) && $users->doesntContain(fn (User $user): bool => $user->name === $patient->name));
 });
 
-it('forbids users without access to enter users list page', function (User $user) {
+it('forbids users without access to enter users list page', function (User $user): void {
     actingAs($user)
         ->get(route('users.index'))
         ->assertForbidden();
@@ -49,7 +45,7 @@ it('forbids users without access to enter users list page', function (User $user
     fn () => User::factory()->staff()->create(),
 ]);
 
-it('forbids users without access to enter create user page', function (User $user) {
+it('forbids users without access to enter create user page', function (User $user): void {
     actingAs($user)
         ->get(route('users.create'))
         ->assertForbidden();
@@ -59,7 +55,7 @@ it('forbids users without access to enter create user page', function (User $use
     fn () => User::factory()->staff()->create(),
 ]);
 
-it('allows clinic owner to create a new user and assign a role', function (RoleEnum $role) {
+it('allows clinic owner to create a new user and assign a role', function (RoleEnum $role): void {
     $clinicOwner = User::factory()->clinicOwner()->create();
 
     actingAs($clinicOwner)
@@ -79,7 +75,7 @@ it('allows clinic owner to create a new user and assign a role', function (RoleE
     RoleEnum::Staff,
 ]);
 
-it('allows clinic admin to create a new user and assign a role', function (RoleEnum $role) {
+it('allows clinic admin to create a new user and assign a role', function (RoleEnum $role): void {
     $clinicAdmin = User::factory()->clinicAdmin()->create();
 
     actingAs($clinicAdmin)

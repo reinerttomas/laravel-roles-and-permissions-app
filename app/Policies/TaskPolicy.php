@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\PermissionEnum;
-use App\Models\Task;
 use App\Models\User;
 
 final class TaskPolicy
@@ -20,12 +19,12 @@ final class TaskPolicy
         return $user->hasPermissionTo(PermissionEnum::CreateTask);
     }
 
-    public function update(User $user, Task $task): bool
+    public function update(User $user): bool
     {
         return $user->hasPermissionTo(PermissionEnum::EditTask);
     }
 
-    public function delete(User $user, Task $task): bool
+    public function delete(User $user): bool
     {
         return $user->hasPermissionTo(PermissionEnum::DeleteTask);
     }

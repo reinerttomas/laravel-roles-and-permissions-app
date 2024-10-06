@@ -20,13 +20,11 @@ final class UserController extends Controller
         Gate::authorize('viewAny', User::class);
 
         $users = User::with('roles')
-            ->whereHas('roles', function (Builder $query) {
-                return $query->whereIn('name', [
-                    RoleEnum::ClinicAdmin->value,
-                    RoleEnum::Doctor->value,
-                    RoleEnum::Staff->value,
-                ]);
-            })
+            ->whereHas('roles', fn (Builder $query) => $query->whereIn('name', [
+                RoleEnum::ClinicAdmin->value,
+                RoleEnum::Doctor->value,
+                RoleEnum::Staff->value,
+            ]))
             ->whereRelation('teams', 'team_id', auth()->user()->current_team_id)
             ->get();
 

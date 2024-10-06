@@ -14,11 +14,12 @@ declare(strict_types=1);
 */
 
 use Database\Seeders\RoleAndPermissionSeeder;
+
 use function Pest\Laravel\seed;
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->beforeEach(function () {
+    ->beforeEach(function (): void {
         seed(RoleAndPermissionSeeder::class);
     })
     ->in('Feature');

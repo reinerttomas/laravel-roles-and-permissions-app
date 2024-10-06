@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 
 use function Pest\Laravel\actingAs;
 
-it('allows to create a new team and assign existing user', function () {
+it('allows to create a new team and assign existing user', function (): void {
     $masterAdmin = User::factory()->masterAdmin()->create();
     $clinicOwner = User::factory()->clinicOwner()->create();
 
@@ -24,7 +24,7 @@ it('allows to create a new team and assign existing user', function () {
     expect($clinicOwner->belongsToTeam($newTeam))->toBeTrue();
 });
 
-it('allows to create a new team with a new user', function () {
+it('allows to create a new team with a new user', function (): void {
     $masterAdmin = User::factory()->masterAdmin()->create();
 
     actingAs($masterAdmin)
@@ -41,7 +41,7 @@ it('allows to create a new team with a new user', function () {
     expect($newUser->belongsToTeam($newTeam))->toBeTrue();
 });
 
-it('allows clinic owner to change team', function () {
+it('allows clinic owner to change team', function (): void {
     $clinicOwner = User::factory()->clinicOwner()->create();
     $secondTeam = Team::factory()->create();
 
@@ -56,7 +56,7 @@ it('allows clinic owner to change team', function () {
     expect($clinicOwner->refresh()->current_team_id)->toBe($secondTeam->id);
 });
 
-it('does not allow user to change team if user is not in the team', function () {
+it('does not allow user to change team if user is not in the team', function (): void {
     $clinicOwner = User::factory()->clinicOwner()->create();
     $secondTeam = Team::factory()->create();
 
@@ -67,7 +67,7 @@ it('does not allow user to change team if user is not in the team', function () 
     expect($clinicOwner->refresh()->current_team_id)->toBe($clinicOwner->current_team_id);
 });
 
-it('does not allow to change team for user without switch team permissions', function (User $user) {
+it('does not allow to change team for user without switch team permissions', function (User $user): void {
     $team = Team::factory()->create();
 
     actingAs($user)
